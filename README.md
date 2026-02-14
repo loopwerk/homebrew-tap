@@ -12,7 +12,7 @@ brew install loopwerk/tap/saga
 
 | Formula | Description |
 |---------|-------------|
-| [saga](Formula/saga.rb) | A static site generator written in Swift |
+| [saga](Formula/saga.rb) | A code-first static site generator written in Swift |
 
 ## More Information
 
