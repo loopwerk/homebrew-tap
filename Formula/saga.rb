@@ -1,11 +1,11 @@
 class Saga < Formula
   desc "A code-first static site generator written in Swift"
   homepage "https://github.com/loopwerk/saga-cli"
-  url "https://github.com/loopwerk/saga-cli.git", tag: "1.1.0"
+  url "https://github.com/loopwerk/saga-cli.git", tag: "2.0.0"
   license "MIT"
 
-  depends_on xcode: ["13.0", :build]
-  depends_on macos: :monterey
+  depends_on xcode: ["16.0", :build]
+  depends_on macos: :sonoma
 
   def install
     system "swift", "build", "-c", "release", "--product", "saga", "--disable-sandbox"
