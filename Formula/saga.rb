@@ -7,7 +7,7 @@ class Saga < Formula
   on_macos do
     depends_on macos: :sonoma
     url "https://github.com/loopwerk/saga-cli/releases/download/2.2.0/saga-macos-universal.tar.gz"
-    sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+    sha256 "dc579e80ba9bfdb276a7943b0b4c9dc0f73608ac73619382776bed2a68d9e2fc"
   end
 
   on_linux do
