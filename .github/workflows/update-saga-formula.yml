@@ -8,18 +8,47 @@ jobs:
   update-formula:
     runs-on: ubuntu-latest
 
+    env:
+      VERSION: ${{ github.event.client_payload.version }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
       - name: Update formula
         run: |
-          VERSION="${{ github.event.client_payload.version }}"
-          sed -i "s|tag: \".*\"|tag: \"${VERSION}\"|" Formula/saga.rb
+          set -euo pipefail
+
+          if ! [[ "$VERSION" =~ ^[0-9A-Za-z.+-]+$ ]]; then
+            echo "::error::Refusing to build a formula for version '$VERSION'"
+            exit 1
+          fi
+
+          SHA=$(curl -fsSL "https://github.com/loopwerk/saga-cli/releases/download/${VERSION}/saga-macos-universal.tar.gz.sha256" | awk '{print $1}')
+          if ! [[ "$SHA" =~ ^[0-9a-f]{64}$ ]]; then
+            echo "::error::Bad checksum for ${VERSION}: '${SHA}'"
+            exit 1
+          fi
+
+          # The old version appears in `version`, the macOS url and the Linux tag,
+          # so one global replace covers all three.
+          OLD=$(sed -n 's|^  version "\(.*\)"$|\1|p' Formula/saga.rb)
+          [ -n "$OLD" ] || { echo "::error::Could not read the current version"; exit 1; }
+
+          sed -i "s|${OLD}|${VERSION}|g" Formula/saga.rb
+          sed -i "s|^\\( *\\)sha256 \".*\"$|\\1sha256 \"${SHA}\"|" Formula/saga.rb
+
+          # sed exits 0 when nothing matches, so check the result rather than trust it.
+          grep -q "^  version \"${VERSION}\"$" Formula/saga.rb || { echo "::error::version not updated"; exit 1; }
+          grep -q "download/${VERSION}/saga-macos-universal.tar.gz" Formula/saga.rb || { echo "::error::url not updated"; exit 1; }
+          grep -q "tag: \"${VERSION}\"" Formula/saga.rb || { echo "::error::tag not updated"; exit 1; }
+          grep -q "sha256 \"${SHA}\"" Formula/saga.rb || { echo "::error::sha256 not updated"; exit 1; }
+
+          cat Formula/saga.rb
 
       - name: Commit and push
         run: |
-          VERSION="${{ github.event.client_payload.version }}"
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add Formula/saga.rb
