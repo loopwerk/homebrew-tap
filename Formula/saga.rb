@@ -1,17 +1,17 @@
 class Saga < Formula
   desc "A code-first static site generator written in Swift"
   homepage "https://github.com/loopwerk/saga-cli"
-  version "2.2.0"
+  version "2.3.0"
   license "MIT"
 
   on_macos do
     depends_on macos: :sonoma
-    url "https://github.com/loopwerk/saga-cli/releases/download/2.2.0/saga-macos-universal.tar.gz"
-    sha256 "dc579e80ba9bfdb276a7943b0b4c9dc0f73608ac73619382776bed2a68d9e2fc"
+    url "https://github.com/loopwerk/saga-cli/releases/download/2.3.0/saga-macos-universal.tar.gz"
+    sha256 "76f137e088d33a52059582b1b6909b71908d04c377f9e1bca7b1dcadea13bfbd"
   end
 
   on_linux do
-    url "https://github.com/loopwerk/saga-cli.git", tag: "2.2.0"
+    url "https://github.com/loopwerk/saga-cli.git", tag: "2.3.0"
     depends_on "swift" => :build
   end
 
